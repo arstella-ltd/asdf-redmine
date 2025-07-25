@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+GH_REPO="https://github.com/arstella-ltd/RedmineCLI"
+TOOL_NAME="redmine"
+
+plugin_dir=$(dirname "$(dirname "${BASH_SOURCE[0]}")")
+
+# shellcheck source=../lib/utils.bash
+source "${plugin_dir}/lib/utils.bash"
+
+mkdir -p "$ASDF_DOWNLOAD_PATH"
+
+# Download the zip file
+release_file="$ASDF_DOWNLOAD_PATH/$TOOL_NAME-$ASDF_INSTALL_VERSION.zip"
+download_release "$ASDF_INSTALL_VERSION" "$release_file"
+
+# Extract the zip file
+echo "* Extracting $release_file to $ASDF_DOWNLOAD_PATH..."
+unzip -q "$release_file" -d "$ASDF_DOWNLOAD_PATH" || fail "Could not extract $release_file"
+
+# Remove the zip file after extraction
+rm "$release_file"

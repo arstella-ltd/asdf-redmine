@@ -63,7 +63,7 @@ download_release() {
   arch="$(get_arch)"
 
   # Construct the download URL based on the release pattern
-  url="$GH_REPO/releases/download/v${version}/redmine-cli-${platform}-${arch}.zip"
+  url="$GH_REPO/releases/download/v${version}/redmine-cli-${version}-${platform}-${arch}.zip"
 
   echo "* Downloading $TOOL_NAME release $version from $url..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"

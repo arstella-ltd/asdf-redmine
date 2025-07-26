@@ -32,7 +32,8 @@ jobs:
     - name: Setup mise
       run: |
         mise --version
-        mise plugins add redmine https://github.com/${{ github.repository }}
+        # Use the local plugin code from the current branch
+        mise plugins add redmine .
     
     - name: Install RedmineCLI ${{ matrix.redmine-version }}
       run: |
@@ -75,7 +76,8 @@ jobs:
     
     - name: Add RedmineCLI plugin
       run: |
-        asdf plugin add redmine https://github.com/${{ github.repository }}
+        # Use the local plugin code from the current branch
+        asdf plugin add redmine .
     
     - name: Install RedmineCLI ${{ matrix.redmine-version }}
       run: |

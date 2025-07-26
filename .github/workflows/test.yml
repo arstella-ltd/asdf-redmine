@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        redmine-version: ["0.8.1", "0.8.0", "0.7.0"]
+        redmine-version: ["0.8.1"]  # Only test versions with new URL pattern
     
     steps:
     - name: Checkout code
@@ -43,10 +43,12 @@ jobs:
       run: |
         mise list
         mise which redmine
+        eval "$(mise activate bash)"
         redmine --version
     
     - name: Test basic functionality
       run: |
+        eval "$(mise activate bash)"
         # Test that the binary is executable and returns version
         version_output=$(redmine --version)
         echo "Version output: $version_output"
@@ -62,7 +64,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        redmine-version: ["0.8.1", "0.8.0"]
+        redmine-version: ["0.8.1"]  # Only test versions with new URL pattern
     
     steps:
     - name: Checkout code

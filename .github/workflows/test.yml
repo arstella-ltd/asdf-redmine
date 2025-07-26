@@ -1,0 +1,91 @@
+name: Test Plugin
+
+on:
+  push:
+    branches: [ main, "fix/**", "feature/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-mise:
+    name: Test with mise on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        redmine-version: ["0.8.1"]  # Only test versions with new URL pattern
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install mise
+      run: |
+        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          curl https://mise.run | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        else
+          brew install mise
+        fi
+    
+    - name: Setup mise
+      run: |
+        mise --version
+        # Use the local plugin code from the current branch
+        mise plugins add redmine file://$PWD
+    
+    - name: Install RedmineCLI ${{ matrix.redmine-version }}
+      run: |
+        mise install redmine@${{ matrix.redmine-version }}
+        mise global redmine@${{ matrix.redmine-version }}
+    
+    - name: Verify installation
+      run: |
+        mise list
+        mise which redmine
+        eval "$(mise activate bash)"
+        redmine --version
+    
+    - name: Test basic functionality
+      run: |
+        eval "$(mise activate bash)"
+        # Test that the binary is executable and returns version
+        version_output=$(redmine --version)
+        echo "Version output: $version_output"
+        if [[ -z "$version_output" ]]; then
+          echo "Error: redmine --version returned empty output"
+          exit 1
+        fi
+
+  test-asdf:
+    name: Test with asdf on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        redmine-version: ["0.8.1"]  # Only test versions with new URL pattern
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install asdf
+      uses: asdf-vm/actions/setup@v3
+    
+    - name: Add RedmineCLI plugin
+      run: |
+        # Use the local plugin code from the current branch
+        asdf plugin add redmine .
+    
+    - name: Install RedmineCLI ${{ matrix.redmine-version }}
+      run: |
+        asdf install redmine ${{ matrix.redmine-version }}
+        asdf global redmine ${{ matrix.redmine-version }}
+    
+    - name: Verify installation
+      run: |
+        asdf list
+        asdf which redmine
+        redmine --version

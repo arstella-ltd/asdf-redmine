@@ -62,6 +62,11 @@ mise use redmine@0.8.0
 - macOS (Intel, Apple Silicon)
 - Windows (x64) ※ WSL経由での使用を推奨
 
+## バージョン更新時の注意
+
+RedmineCLIのバージョン更新（例：0.8.1から0.8.2）に伴うasdf-redmineプラグインの更新は不要です。
+プラグインは自動的に新しいバージョンのダウンロードURLを生成するため、特別な対応は必要ありません。
+
 ## Contributing
 
 Contributions of any kind welcome! See the [contributing guide](contributing.md).
